@@ -1,8 +1,6 @@
 # scm 💪
 
----
-
-## It's time 🕒 to clone ⤵️ interesting 🧐 repo faster ⏩ and cleaner 🧹
+## It's time 🕒 to clone ⤵️ interesting 🧐 repo faster ⏩ and clearer 🧹
 
 ![Usage example](demo.svg)
 
@@ -40,5 +38,5 @@ go build -o ~/Bin/scm main.go
 ## Running tests
 
 ```shell
- go test  -cover -v ./internal
+go test -cover -v ./internal
 ```
