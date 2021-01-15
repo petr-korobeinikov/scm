@@ -34,4 +34,9 @@ func main() {
 	if err != nil {
 		return
 	}
+
+	err = internal.ExecutePostCmd(cfg)
+	if err != nil {
+		return
+	}
 }

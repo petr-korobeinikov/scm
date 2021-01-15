@@ -27,6 +27,8 @@ Put this into your `.rc`-file:
 ```shell
 export SCM_WORKSPACE_DIR="~/Projects"         # defaults to ~/Workspace
 export SCM_WORKSPACE_DIR_DEFAULT_PERM="0755"  # defaults to 0755
+
+export SCM_POST_CLONE_CMD="idea {{.ScmWorkingCopyPath}}"  # defaults to ""
 ```
 
 ## Building from source

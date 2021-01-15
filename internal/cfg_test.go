@@ -2,6 +2,7 @@ package internal
 
 import (
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -47,6 +48,64 @@ func TestReadCfg(t *testing.T) {
 		_, err := ReadCfg(`https://github % com/user/repo`)
 		if err == nil {
 			t.Errorf(`repo url parsed but shouldn't'`)
+		}
+	})
+
+	t.Run(`post clone cmd set`, func(t *testing.T) {
+		saveScmWorkspaceDir := os.Getenv(`SCM_WORKSPACE_DIR`)
+		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
+
+		_ = os.Setenv(`SCM_WORKSPACE_DIR`, `~/Workspace`)
+		expected := Cfg{
+			ScmPostCloneCmd: ScmPostCloneCmd{
+				Cmd:  "idea",
+				Args: []string{"/Users/pkorobeinikov/Workspace/github.com/user/repo"},
+			},
+		}
+
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `idea {{.ScmWorkingCopyPath}}`)
+		actual, _ := ReadCfg(`https://github.com/user/repo`)
+
+		if !reflect.DeepEqual(expected.ScmPostCloneCmd, actual.ScmPostCloneCmd) {
+			t.Errorf("want %#v, got %#v", expected.ScmPostCloneCmd, actual.ScmPostCloneCmd)
+		}
+
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr)
+		_ = os.Setenv(`SCM_WORKSPACE_DIR`, saveScmWorkspaceDir)
+	})
+
+	t.Run(`empty post clone cmd`, func(t *testing.T) {
+		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
+
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, ``)
+		_, err := ReadCfg(`https://github.com/user/repo`)
+
+		if err != nil {
+			t.Error(`empty post clone cmd should not cause an error`)
+		}
+
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr)
+	})
+
+	t.Run(`incorrect post clone cmd option`, func(t *testing.T) {
+		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
+
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `editor {{.WrongTmplAttr}}`)
+		_, err := ReadCfg(`https://github.com/user/repo`)
+
+		if err == nil {
+			t.Error(`expected template error`)
+		}
+
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr)
+	})
+
+	t.Run(`template error in post clone cmd option`, func(t *testing.T) {
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `editor {{.WrongTmplAttr}`)
+		_, err := ReadCfg(`https://github.com/user/repo`)
+
+		if err == nil {
+			t.Error(`expected template error`)
 		}
 	})
 }
