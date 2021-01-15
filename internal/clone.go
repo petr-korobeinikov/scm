@@ -14,9 +14,5 @@ func Clone(scmBin, scmUrl, scmWorkingCopyPath string) error {
 	scmCmd.Stdout = os.Stdout
 	scmCmd.Stderr = os.Stderr
 
-	if err := scmCmd.Run(); err != nil {
-		return err
-	}
-
-	return nil
+	return scmCmd.Run()
 }
