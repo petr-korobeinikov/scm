@@ -9,35 +9,25 @@ import (
 	"text/template"
 )
 
-func ReadCfg(scmUrl string) (Cfg, error) {
-	scmWorkspaceDir, _ := LookupEnvOrDefault("SCM_WORKSPACE_DIR", "~/Workspace")
-	scmExpanedWorkspaceDir, err := ExpandHomeDir(scmWorkspaceDir)
+func ReadCfg(scmUrl string) (cfg Cfg, err error) {
+	scmExpandedWorkspaceDir, err := readScmWorkspaceDir()
 	if err != nil {
-		return Cfg{}, err
+		return
 	}
 
-	scmWorkspaceDirDefaultPermStr, _ := LookupEnvOrDefault("SCM_WORKSPACE_DIR_DEFAULT_PERM", "0755")
-	scmWorkspaceDirDefaultPerm, err := strconv.ParseInt(scmWorkspaceDirDefaultPermStr, 8, strconv.IntSize)
-	scmWorkspaceDirDefaultPermFileMode := os.FileMode(scmWorkspaceDirDefaultPerm)
-
-	scmPathFromUrl, err := ExtractLocalPathFromScmURL(scmUrl)
+	scmWorkspaceDirDefaultPermFileMode, err := readScmWorkspaceDirDefaultPermFileMode()
 	if err != nil {
-		return Cfg{}, err
+		return
 	}
-	scmWorkingCopyPath := filepath.Join(scmExpanedWorkspaceDir, scmPathFromUrl)
 
-	var scmPostCloneCmd ScmPostCloneCmd
-	if scmPostCloneCmdStr, found := LookupEnvOrDefault("SCM_POST_CLONE_CMD", ""); found {
-		tmplData := ScmPostCloneCmdTmplData{ScmWorkingCopyPath: scmWorkingCopyPath}
+	scmWorkingCopyPath, err := readScmWorkingCopyPath(scmExpandedWorkspaceDir, scmUrl)
+	if err != nil {
+		return
+	}
 
-		scmPostCloneCmdTmpl, err := parseScmPostCloneCmdTmpl(scmPostCloneCmdStr, tmplData)
-		if err != nil {
-			return Cfg{}, err
-		}
-
-		cmd, args := prepareScmPostCloneCmd(scmPostCloneCmdTmpl)
-		scmPostCloneCmd.Cmd = cmd
-		scmPostCloneCmd.Args = args
+	scmPostCloneCmd, err := readPostCloneCmd(scmWorkingCopyPath)
+	if err != nil {
+		return
 	}
 
 	return Cfg{
@@ -45,6 +35,51 @@ func ReadCfg(scmUrl string) (Cfg, error) {
 		ScmWorkingCopyPath:         scmWorkingCopyPath,
 		ScmPostCloneCmd:            scmPostCloneCmd,
 	}, nil
+}
+
+func readScmWorkspaceDir() (string, error) {
+	scmWorkspaceDir, _ := LookupEnvOrDefault("SCM_WORKSPACE_DIR", "~/Workspace")
+
+	return ExpandHomeDir(scmWorkspaceDir)
+}
+
+func readScmWorkspaceDirDefaultPermFileMode() (os.FileMode, error) {
+	scmWorkspaceDirDefaultPermStr, _ := LookupEnvOrDefault("SCM_WORKSPACE_DIR_DEFAULT_PERM", "0755")
+	scmWorkspaceDirDefaultPerm, err := strconv.ParseInt(scmWorkspaceDirDefaultPermStr, 8, strconv.IntSize)
+	if err != nil {
+		return 0, err
+	}
+
+	return os.FileMode(scmWorkspaceDirDefaultPerm), nil
+}
+
+func readScmWorkingCopyPath(scmExpandedWorkspaceDir, scmUrl string) (string, error) {
+	scmPathFromUrl, err := ExtractLocalPathFromScmURL(scmUrl)
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(scmExpandedWorkspaceDir, scmPathFromUrl), nil
+}
+
+func readPostCloneCmd(scmWorkingCopyPath string) (ScmPostCloneCmd, error) {
+	if scmPostCloneCmdStr, found := LookupEnvOrDefault("SCM_POST_CLONE_CMD", ""); found {
+		tmplData := ScmPostCloneCmdTmplData{ScmWorkingCopyPath: scmWorkingCopyPath}
+
+		scmPostCloneCmdTmpl, err := parseScmPostCloneCmdTmpl(scmPostCloneCmdStr, tmplData)
+		if err != nil {
+			return ScmPostCloneCmd{}, err
+		}
+
+		cmd, args := prepareScmPostCloneCmd(scmPostCloneCmdTmpl)
+
+		return ScmPostCloneCmd{
+			Cmd:  cmd,
+			Args: args,
+		}, nil
+	}
+
+	return ScmPostCloneCmd{}, nil
 }
 
 func parseScmPostCloneCmdTmpl(unparsedTmpl string, tmplData ScmPostCloneCmdTmplData) (unparsedCmd string, err error) {
