@@ -7,23 +7,23 @@ import (
 
 func TestParseArgs(t *testing.T) {
 	t.Run(`complex`, func(t *testing.T) {
-		testCases := []struct {
+		type expected struct {
+			scmBin string
+			scmUrl string
+			err    error
+		}
+
+		type testCase struct {
 			name     string
 			given    []string
-			expected struct {
-				scmBin string
-				scmUrl string
-				err    error
-			}
-		}{
+			expected expected
+		}
+
+		testCases := []testCase{
 			{
 				name:  "not enough arguments",
 				given: []string{"scm"},
-				expected: struct {
-					scmBin string
-					scmUrl string
-					err    error
-				}{
+				expected: expected{
 					scmBin: "",
 					scmUrl: "",
 					err:    NotEnoughArgumentsErr,
@@ -32,11 +32,7 @@ func TestParseArgs(t *testing.T) {
 			{
 				name:  "too long argument list",
 				given: []string{"foo", "bar", "baz", "quix"},
-				expected: struct {
-					scmBin string
-					scmUrl string
-					err    error
-				}{
+				expected: expected{
 					scmBin: "",
 					scmUrl: "",
 					err:    TooLongArgumentListErr,
@@ -45,11 +41,7 @@ func TestParseArgs(t *testing.T) {
 			{
 				name:  "git by default",
 				given: []string{"scm", "https://github.com/user/repo"},
-				expected: struct {
-					scmBin string
-					scmUrl string
-					err    error
-				}{
+				expected: expected{
 					scmBin: "git",
 					scmUrl: "https://github.com/user/repo",
 					err:    nil,
@@ -58,11 +50,7 @@ func TestParseArgs(t *testing.T) {
 			{
 				name:  "hg if needed",
 				given: []string{"scm", "hg", "http://hg.robustwebserver.org/robustwebserver/"},
-				expected: struct {
-					scmBin string
-					scmUrl string
-					err    error
-				}{
+				expected: expected{
 					scmBin: "hg",
 					scmUrl: "http://hg.robustwebserver.org/robustwebserver/",
 					err:    nil,
@@ -75,15 +63,15 @@ func TestParseArgs(t *testing.T) {
 				actualScmBin, actualScmUrl, actualErr := ParseArgs(testCase.given)
 
 				if testCase.expected.scmBin != actualScmBin {
-					t.Fail()
+					t.Errorf(`want "%s", got "%s"`, testCase.expected.scmBin, actualScmBin)
 				}
 
 				if testCase.expected.scmUrl != actualScmUrl {
-					t.Fail()
+					t.Errorf(`want "%s", got "%s"`, testCase.expected.scmUrl, actualScmUrl)
 				}
 
 				if testCase.expected.err != actualErr {
-					t.Fail()
+					t.Errorf(`want "%s", got "%s"`, testCase.expected.err, actualErr)
 				}
 			})
 		}
