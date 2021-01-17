@@ -8,7 +8,7 @@ import (
 
 func TestReadCfg(t *testing.T) {
 	t.Run(`positive`, func(t *testing.T) {
-		saveScmWorkspaceDir := os.Getenv(`SCM_WORKSPACE_DIR`)
+		saveScmWorkspaceDir, found := os.LookupEnv(`SCM_WORKSPACE_DIR`)
 
 		expected := Cfg{
 			ScmWorkspaceDirDefaultPerm: 0755,
@@ -26,12 +26,12 @@ func TestReadCfg(t *testing.T) {
 			t.Errorf(`want "%s", got "%s"`, expected.ScmWorkingCopyPath, actual.ScmWorkingCopyPath)
 		}
 
-		_ = os.Setenv(`SCM_WORKSPACE_DIR`, saveScmWorkspaceDir)
+		restoreEnvIfItWasFound(`SCM_WORKSPACE_DIR`, saveScmWorkspaceDir, found)
 	})
 
 	t.Run(`homedir not detected`, func(t *testing.T) {
-		saveScmWorkspaceDir := os.Getenv(`SCM_WORKSPACE_DIR`)
-		saveHome := os.Getenv(`HOME`)
+		saveScmWorkspaceDir, foundScmWorkspaceDir := os.LookupEnv(`SCM_WORKSPACE_DIR`)
+		saveHome, foundHome := os.LookupEnv(`HOME`)
 
 		_ = os.Unsetenv(`HOME`)
 		_ = os.Setenv(`SCM_WORKSPACE_DIR`, `~/Workspace`)
@@ -40,8 +40,8 @@ func TestReadCfg(t *testing.T) {
 			t.Errorf(`homedir detected but shouldn't'`)
 		}
 
-		_ = os.Setenv(`HOME`, saveHome)
-		_ = os.Setenv(`SCM_WORKSPACE_DIR`, saveScmWorkspaceDir)
+		restoreEnvIfItWasFound(`HOME`, saveHome, foundHome)
+		restoreEnvIfItWasFound(`SCM_WORKSPACE_DIR`, saveScmWorkspaceDir, foundScmWorkspaceDir)
 	})
 
 	t.Run(`invalid workspace dir perm`, func(t *testing.T) {
@@ -62,8 +62,8 @@ func TestReadCfg(t *testing.T) {
 	})
 
 	t.Run(`post clone cmd set`, func(t *testing.T) {
-		saveScmWorkspaceDir := os.Getenv(`SCM_WORKSPACE_DIR`)
-		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
+		saveScmWorkspaceDir, foundScmWorkspaceDir := os.LookupEnv(`SCM_WORKSPACE_DIR`)
+		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
 
 		_ = os.Setenv(`SCM_WORKSPACE_DIR`, `~/Workspace`)
 		expected := Cfg{
@@ -80,12 +80,12 @@ func TestReadCfg(t *testing.T) {
 			t.Errorf("want %#v, got %#v", expected.ScmPostCloneCmd, actual.ScmPostCloneCmd)
 		}
 
-		_ = os.Setenv(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr)
-		_ = os.Setenv(`SCM_WORKSPACE_DIR`, saveScmWorkspaceDir)
+		restoreEnvIfItWasFound(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr, foundScmPostCloneCmd)
+		restoreEnvIfItWasFound(`SCM_WORKSPACE_DIR`, saveScmWorkspaceDir, foundScmWorkspaceDir)
 	})
 
 	t.Run(`unset post clone cmd`, func(t *testing.T) {
-		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
+		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
 
 		_ = os.Unsetenv(`SCM_POST_CLONE_CMD`)
 		_, err := ReadCfg(`https://github.com/user/repo`)
@@ -94,11 +94,11 @@ func TestReadCfg(t *testing.T) {
 			t.Error(`unset post clone cmd should not cause an error`)
 		}
 
-		_ = os.Setenv(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr)
+		restoreEnvIfItWasFound(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr, foundScmPostCloneCmd)
 	})
 
 	t.Run(`empty post clone cmd`, func(t *testing.T) {
-		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
+		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
 
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, ``)
 		_, err := ReadCfg(`https://github.com/user/repo`)
@@ -107,11 +107,11 @@ func TestReadCfg(t *testing.T) {
 			t.Error(`empty post clone cmd should not cause an error`)
 		}
 
-		_ = os.Setenv(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr)
+		restoreEnvIfItWasFound(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr, foundScmPostCloneCmd)
 	})
 
 	t.Run(`incorrect post clone cmd option`, func(t *testing.T) {
-		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
+		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
 
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `editor {{.WrongTmplAttr}}`)
 		_, err := ReadCfg(`https://github.com/user/repo`)
@@ -120,15 +120,25 @@ func TestReadCfg(t *testing.T) {
 			t.Error(`expected template error`)
 		}
 
-		_ = os.Setenv(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr)
+		restoreEnvIfItWasFound(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr, foundScmPostCloneCmd)
 	})
 
 	t.Run(`template error in post clone cmd option`, func(t *testing.T) {
+		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
+
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `editor {{.WrongTmplAttr}`)
 		_, err := ReadCfg(`https://github.com/user/repo`)
 
 		if err == nil {
 			t.Error(`expected template error`)
 		}
+
+		restoreEnvIfItWasFound(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr, foundScmPostCloneCmd)
 	})
+}
+
+func restoreEnvIfItWasFound(key, value string, restore bool) {
+	if restore {
+		_ = os.Setenv(key, value)
+	}
 }
