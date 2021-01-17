@@ -84,6 +84,19 @@ func TestReadCfg(t *testing.T) {
 		_ = os.Setenv(`SCM_WORKSPACE_DIR`, saveScmWorkspaceDir)
 	})
 
+	t.Run(`unset post clone cmd`, func(t *testing.T) {
+		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
+
+		_ = os.Unsetenv(`SCM_POST_CLONE_CMD`)
+		_, err := ReadCfg(`https://github.com/user/repo`)
+
+		if err != nil {
+			t.Error(`unset post clone cmd should not cause an error`)
+		}
+
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr)
+	})
+
 	t.Run(`empty post clone cmd`, func(t *testing.T) {
 		saveScmPostCloneCmdStr := os.Getenv(`SCM_POST_CLONE_CMD`)
 
