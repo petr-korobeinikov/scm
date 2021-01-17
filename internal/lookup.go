@@ -2,8 +2,8 @@ package internal
 
 import "os"
 
-func LookupEnvOrDefault(envName, defaultValue string) (value string, found bool) {
-	if value, found := os.LookupEnv(envName); found {
+func LookupEnvOrDefault(key, defaultValue string) (value string, found bool) {
+	if value, found := os.LookupEnv(key); found {
 		return value, found
 	} else {
 		return defaultValue, false
