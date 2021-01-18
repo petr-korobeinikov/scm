@@ -2,7 +2,31 @@
 
 ## It's time 🕒 to clone ⤵️ interesting 🧐 repo faster ⏩ and clearer 🧹
 
+`scm` is a tool that aims to keep your workspace to be strongly organized.
+
 ![Usage example](demo.svg)
+
+There is an example of how your workspace directory structure would look like:
+
+```shell
+> tree -L 2 /Workspace/
+├── github.com
+│   ├── VictoriaMetrics
+│   ├── fluent
+│   ├── github
+│   ├── golang
+│   ├── goreleaser
+│   ├── hashicorp
+│   ├── micro
+│   ├── prometheus
+│   ├── timescale
+│   ├── topolvm
+│   └── wrouesnel
+├── hg.nginx.org
+│   └── nginx
+└── private-project-storage.tld
+    └── private-project-team
+```
 
 Just type:
 
