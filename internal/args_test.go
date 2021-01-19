@@ -7,17 +7,19 @@ import (
 
 func TestParseArgs(t *testing.T) {
 	t.Run(`complex`, func(t *testing.T) {
-		type expected struct {
-			scmBin string
-			scmUrl string
-			err    error
-		}
+		type (
+			expected struct {
+				scmBin string
+				scmUrl string
+				err    error
+			}
 
-		type testCase struct {
-			name     string
-			given    []string
-			expected expected
-		}
+			testCase struct {
+				name     string
+				given    []string
+				expected expected
+			}
+		)
 
 		testCases := []testCase{
 			{
