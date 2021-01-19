@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"os"
-	"scm/internal"
+	. "scm/internal"
 )
 
 func main() {
@@ -15,27 +15,27 @@ func main() {
 		}
 	}()
 
-	scmBin, scmUrl, err := internal.ParseArgs(os.Args)
+	scmBin, scmUrl, err := ParseArgs(os.Args)
 	if err != nil {
 		return
 	}
 
-	cfg, err := internal.ReadCfg(scmUrl)
+	cfg, err := ReadCfg(scmUrl)
 	if err != nil {
 		return
 	}
 
-	err = internal.PrepareLocalWorkingCopyPath(cfg.ScmWorkingCopyPath, cfg.ScmWorkspaceDirDefaultPerm)
+	err = PrepareLocalWorkingCopyPath(cfg.ScmWorkingCopyPath, cfg.ScmWorkspaceDirDefaultPerm)
 	if err != nil {
 		return
 	}
 
-	err = internal.Clone(scmBin, scmUrl, cfg.ScmWorkingCopyPath)
+	err = Clone(scmBin, scmUrl, cfg.ScmWorkingCopyPath)
 	if err != nil {
 		return
 	}
 
-	err = internal.ExecutePostCmd(cfg)
+	err = ExecutePostCmd(cfg)
 	if err != nil {
 		return
 	}
