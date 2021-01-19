@@ -42,7 +42,7 @@ func TestExtractLocalPathFromScmURL(t *testing.T) {
 	t.Run(`negative`, func(t *testing.T) {
 		_, err := ExtractLocalPathFromScmURL(`malformed % url`)
 		if err == nil {
-			t.Fail()
+			t.Error(`error expected on malformed url`)
 		}
 	})
 }

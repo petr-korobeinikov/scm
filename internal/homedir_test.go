@@ -7,17 +7,21 @@ import (
 
 func TestExpandHomeDir(t *testing.T) {
 	t.Run(`positive`, func(t *testing.T) {
-		actual, _ := ExpandHomeDir(`~/Workspace`)
 		// fixme hardcoded value
-		if `/Users/pkorobeinikov/Workspace` != actual {
-			t.Fail()
+		expected := `/Users/pkorobeinikov/Workspace`
+
+		actual, _ := ExpandHomeDir(`~/Workspace`)
+		if expected != actual {
+			t.Errorf(`want "%s", got "%s"`, expected, actual)
 		}
 	})
 
 	t.Run(`no home dir in path`, func(t *testing.T) {
-		actual, _ := ExpandHomeDir(`/mnt/Volumes/Workspace`)
-		if `/mnt/Volumes/Workspace` != actual {
-			t.Fail()
+		expected := `/mnt/Volumes/Workspace`
+
+		actual, _ := ExpandHomeDir(expected)
+		if expected != actual {
+			t.Errorf(`want "%s", got "%s"`, expected, actual)
 		}
 	})
 
@@ -27,7 +31,7 @@ func TestExpandHomeDir(t *testing.T) {
 		_ = os.Unsetenv(`HOME`)
 		_, err := ExpandHomeDir(`~/Workspace`)
 		if err == nil {
-			t.Fail()
+			t.Error(`an error expected while expanding homedir`)
 		}
 
 		_ = os.Setenv(`HOME`, saveHome)

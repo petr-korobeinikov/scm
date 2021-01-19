@@ -25,7 +25,7 @@ func TestExecutePostCmd(t *testing.T) {
 		})
 
 		if err == nil {
-			t.Fail()
+			t.Error(`an error expected when calling not installed binary`)
 		}
 	})
 
@@ -38,7 +38,7 @@ func TestExecutePostCmd(t *testing.T) {
 		})
 
 		if err != nil {
-			t.Fail()
+			t.Error(`empty cmd must not crash`)
 		}
 	})
 }
