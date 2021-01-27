@@ -6,10 +6,12 @@
 
 ![Usage example](demo.svg)
 
+Watch on [asciinema.org](https://asciinema.org/a/387451).
+
 There is an example of how your workspace directory structure would look like:
 
 ```shell
-> tree -L 2 /Workspace/
+> tree -L 2 ~/Workspace/
 ├── github.com
 │   ├── VictoriaMetrics
 │   ├── fluent
