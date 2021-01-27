@@ -4,11 +4,23 @@
 
 `scm` is a tool that aims to keep your workspace to be strongly organized.
 
-![Usage example](demo.svg)
+[![Usage example](demo.svg)](https://asciinema.org/a/387451)
 
-Watch on [asciinema.org](https://asciinema.org/a/387451).
+Hi, folks!
 
-There is an example of how your workspace directory structure would look like:
+I wrote a simple tool to obtain a working copy of any git repo.
+
+My main purpose is to keep my workspace directory as clean as possible and strongly organized.
+Usually, your projects folder looks like this:
+
+```shell
+project-1
+project-2
+project-3
+...
+```
+
+But I prefer a much more strong outline, like this:
 
 ```shell
 > tree -L 2 ~/Workspace/
@@ -17,20 +29,14 @@ There is an example of how your workspace directory structure would look like:
 │   ├── fluent
 │   ├── github
 │   ├── golang
-│   ├── goreleaser
-│   ├── hashicorp
-│   ├── micro
-│   ├── prometheus
-│   ├── timescale
-│   ├── topolvm
-│   └── wrouesnel
+...
 ├── hg.nginx.org
 │   └── nginx
 └── private-project-storage.tld
     └── private-project-team
 ```
 
-Just type:
+Copy interesting repo URL and paste it into your terminal:
 
 ```shell
 scm https://github.com/pkorobeinikov/scm
@@ -68,3 +74,9 @@ go build -o ~/Bin/scm main.go
 ```shell
 go test -cover -v ./internal
 ```
+
+---
+
+Thank you for your attention! 🤝
+
+Any feedback will be highly appreciated. 😊
