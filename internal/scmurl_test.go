@@ -1,8 +1,10 @@
-package internal
+package internal_test
 
 import (
 	"fmt"
 	"testing"
+
+	. "scm/internal"
 )
 
 func TestExtractLocalPathFromScmURL(t *testing.T) {

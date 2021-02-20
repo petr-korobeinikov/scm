@@ -1,6 +1,10 @@
-package internal
+package internal_test
 
-import "testing"
+import (
+	"testing"
+
+	. "scm/internal"
+)
 
 func TestExecutePostCmd(t *testing.T) {
 	t.Run(`positive`, func(t *testing.T) {

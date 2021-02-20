@@ -1,8 +1,10 @@
-package internal
+package internal_test
 
 import (
 	"os"
 	"testing"
+
+	. "scm/internal"
 )
 
 func TestLookupEnvOrDefault(t *testing.T) {

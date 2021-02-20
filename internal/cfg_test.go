@@ -1,9 +1,11 @@
-package internal
+package internal_test
 
 import (
 	"os"
 	"reflect"
 	"testing"
+
+	. "scm/internal"
 )
 
 func TestReadCfg(t *testing.T) {
