@@ -18,7 +18,7 @@ func TestReadCfg(t *testing.T) {
 		}
 
 		_ = os.Setenv(`SCM_WORKSPACE_DIR`, `/tmp/Workspace`)
-		actual, _ := ReadCfg(`https://github.com/user/repo`)
+		actual, _ := Configure(`https://github.com/user/repo`, ``)
 
 		if expected.ScmWorkspaceDirDefaultPerm != actual.ScmWorkspaceDirDefaultPerm {
 			t.Errorf(`want "%s", got "%s"`, expected.ScmWorkspaceDirDefaultPerm, actual.ScmWorkspaceDirDefaultPerm)
@@ -37,7 +37,7 @@ func TestReadCfg(t *testing.T) {
 
 		_ = os.Unsetenv(`HOME`)
 		_ = os.Setenv(`SCM_WORKSPACE_DIR`, `~/Workspace`)
-		_, err := ReadCfg(`https://github.com/user/repo`)
+		_, err := Configure(`https://github.com/user/repo`, ``)
 		if err == nil {
 			t.Errorf(`homedir detected but shouldn't'`)
 		}
@@ -49,7 +49,7 @@ func TestReadCfg(t *testing.T) {
 	t.Run(`invalid workspace dir perm`, func(t *testing.T) {
 		_ = os.Setenv(`SCM_WORKSPACE_DIR_DEFAULT_PERM`, "invalid_file_mode")
 
-		if _, err := ReadCfg(`https://github.com/user/repo`); err == nil {
+		if _, err := Configure(`https://github.com/user/repo`, ``); err == nil {
 			t.Error(`expected error while reading invalid file mode`)
 		}
 
@@ -57,7 +57,7 @@ func TestReadCfg(t *testing.T) {
 	})
 
 	t.Run(`mailformed repo url given`, func(t *testing.T) {
-		_, err := ReadCfg(`https://github % com/user/repo`)
+		_, err := Configure(`https://github % com/user/repo`, ``)
 		if err == nil {
 			t.Errorf(`repo url parsed but shouldn't'`)
 		}
@@ -76,7 +76,7 @@ func TestReadCfg(t *testing.T) {
 		}
 
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `idea {{.ScmWorkingCopyPath}}`)
-		actual, _ := ReadCfg(`https://github.com/user/repo`)
+		actual, _ := Configure(`https://github.com/user/repo`, ``)
 
 		if !reflect.DeepEqual(expected.ScmPostCloneCmd, actual.ScmPostCloneCmd) {
 			t.Errorf("want %#v, got %#v", expected.ScmPostCloneCmd, actual.ScmPostCloneCmd)
@@ -90,7 +90,7 @@ func TestReadCfg(t *testing.T) {
 		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
 
 		_ = os.Unsetenv(`SCM_POST_CLONE_CMD`)
-		_, err := ReadCfg(`https://github.com/user/repo`)
+		_, err := Configure(`https://github.com/user/repo`, ``)
 
 		if err != nil {
 			t.Error(`unset post clone cmd should not cause an error`)
@@ -103,7 +103,7 @@ func TestReadCfg(t *testing.T) {
 		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
 
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, ``)
-		_, err := ReadCfg(`https://github.com/user/repo`)
+		_, err := Configure(`https://github.com/user/repo`, ``)
 
 		if err != nil {
 			t.Error(`empty post clone cmd should not cause an error`)
@@ -116,7 +116,7 @@ func TestReadCfg(t *testing.T) {
 		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
 
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `editor {{.WrongTmplAttr}}`)
-		_, err := ReadCfg(`https://github.com/user/repo`)
+		_, err := Configure(`https://github.com/user/repo`, ``)
 
 		if err == nil {
 			t.Error(`expected template error`)
@@ -129,10 +129,23 @@ func TestReadCfg(t *testing.T) {
 		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
 
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `editor {{.WrongTmplAttr}`)
-		_, err := ReadCfg(`https://github.com/user/repo`)
+		_, err := Configure(`https://github.com/user/repo`, ``)
 
 		if err == nil {
 			t.Error(`expected template error`)
+		}
+
+		restoreEnvIfItWasFound(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr, foundScmPostCloneCmd)
+	})
+
+	t.Run(`override post clone cmd`, func(t *testing.T) {
+		saveScmPostCloneCmdStr, foundScmPostCloneCmd := os.LookupEnv(`SCM_POST_CLONE_CMD`)
+
+		_ = os.Setenv(`SCM_POST_CLONE_CMD`, ``)
+		cfg, _ := Configure(`https://github.com/user/repo`, `-`)
+
+		if cfg.ScmPostCloneCmd.Cmd != "" {
+			t.Errorf(`want empty post clone cmd, got %s`, cfg.ScmPostCloneCmd.Cmd)
 		}
 
 		restoreEnvIfItWasFound(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr, foundScmPostCloneCmd)

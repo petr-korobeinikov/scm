@@ -52,6 +52,12 @@ scm hg http://hg.nginx.org/nginx
 
 will clone `scm hg http://hg.nginx.org/nginx/` into `~/Workspace/hg.nginx.org/nginx`.
 
+Trailing `-` allows omitting execution of post clone command.
+
+```shell
+scm https://github.com/github/gitignore -
+```
+
 ## Configuration
 
 Put this into your `.rc`-file:

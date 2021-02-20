@@ -9,7 +9,7 @@ import (
 	"text/template"
 )
 
-func ReadCfg(scmUrl string) (cfg Cfg, err error) {
+func Configure(scmUrl, scmOverridePostCloneCmd string) (cfg Cfg, err error) {
 	scmExpandedWorkspaceDir, err := readScmWorkspaceDir()
 	if err != nil {
 		return
@@ -28,6 +28,11 @@ func ReadCfg(scmUrl string) (cfg Cfg, err error) {
 	scmPostCloneCmd, err := readPostCloneCmd(scmWorkingCopyPath)
 	if err != nil {
 		return
+	}
+
+	switch {
+	case scmOverridePostCloneCmd == "-":
+		scmPostCloneCmd = emptyPostCloneCmd
 	}
 
 	return Cfg{
@@ -101,6 +106,9 @@ func prepareScmPostCloneCmd(unpreparedCmd string) (cmd string, args []string) {
 
 	return parts[0], parts[1:]
 }
+
+// fixme make type immutable
+var emptyPostCloneCmd = ScmPostCloneCmd{}
 
 type Cfg struct {
 	ScmWorkspaceDirDefaultPerm os.FileMode

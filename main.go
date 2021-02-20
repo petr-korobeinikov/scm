@@ -16,12 +16,12 @@ func main() {
 		}
 	}()
 
-	scmBin, scmUrl, err := ParseArgs(os.Args)
+	scmBin, scmUrl, scmOverridePostCloneCmd, err := ParseArgs(os.Args)
 	if err != nil {
 		return
 	}
 
-	cfg, err := ReadCfg(scmUrl)
+	cfg, err := Configure(scmUrl, scmOverridePostCloneCmd)
 	if err != nil {
 		return
 	}
