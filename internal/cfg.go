@@ -32,7 +32,7 @@ func Configure(scmUrl, scmOverridePostCloneCmd string) (cfg Cfg, err error) {
 
 	switch {
 	case scmOverridePostCloneCmd == "-":
-		scmPostCloneCmd = emptyPostCloneCmd
+		scmPostCloneCmd = EmptyPostCloneCmd
 	}
 
 	return Cfg{
@@ -67,24 +67,21 @@ func readScmWorkingCopyPath(scmExpandedWorkspaceDir, scmUrl string) (string, err
 	return filepath.Join(scmExpandedWorkspaceDir, scmPathFromUrl), nil
 }
 
-func readPostCloneCmd(scmWorkingCopyPath string) (ScmPostCloneCmd, error) {
+func readPostCloneCmd(scmWorkingCopyPath string) (*scmPostCloneCmd, error) {
 	if scmPostCloneCmdStr, found := LookupEnvOrDefault("SCM_POST_CLONE_CMD", ""); found {
 		tmplData := ScmPostCloneCmdTmplData{ScmWorkingCopyPath: scmWorkingCopyPath}
 
 		scmPostCloneCmdTmpl, err := parseScmPostCloneCmdTmpl(scmPostCloneCmdStr, tmplData)
 		if err != nil {
-			return ScmPostCloneCmd{}, err
+			return EmptyPostCloneCmd, err
 		}
 
 		cmd, args := prepareScmPostCloneCmd(scmPostCloneCmdTmpl)
 
-		return ScmPostCloneCmd{
-			Cmd:  cmd,
-			Args: args,
-		}, nil
+		return NewPostCloneCmd(cmd, args), nil
 	}
 
-	return ScmPostCloneCmd{}, nil
+	return EmptyPostCloneCmd, nil
 }
 
 func parseScmPostCloneCmdTmpl(unparsedTmpl string, tmplData ScmPostCloneCmdTmplData) (unparsedCmd string, err error) {
@@ -107,20 +104,38 @@ func prepareScmPostCloneCmd(unpreparedCmd string) (cmd string, args []string) {
 	return parts[0], parts[1:]
 }
 
-// fixme make type immutable
-var emptyPostCloneCmd = ScmPostCloneCmd{}
-
 type Cfg struct {
 	ScmWorkspaceDirDefaultPerm os.FileMode
 	ScmWorkingCopyPath         string
-	ScmPostCloneCmd            ScmPostCloneCmd
-}
-
-type ScmPostCloneCmd struct {
-	Cmd  string
-	Args []string
+	ScmPostCloneCmd            *scmPostCloneCmd
 }
 
 type ScmPostCloneCmdTmplData struct {
 	ScmWorkingCopyPath string
+}
+
+func (c *scmPostCloneCmd) Command() string {
+	return c.cmd
+}
+
+func (c *scmPostCloneCmd) Arguments() []string {
+	return c.args
+}
+
+func (c *scmPostCloneCmd) IsEmpty() bool {
+	return c.cmd == ""
+}
+
+func NewPostCloneCmd(cmd string, args []string) *scmPostCloneCmd {
+	return &scmPostCloneCmd{
+		cmd:  cmd,
+		args: args,
+	}
+}
+
+var EmptyPostCloneCmd = NewPostCloneCmd("", []string{})
+
+type scmPostCloneCmd struct {
+	cmd  string
+	args []string
 }

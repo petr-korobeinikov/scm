@@ -69,10 +69,7 @@ func TestReadCfg(t *testing.T) {
 
 		_ = os.Setenv(`SCM_WORKSPACE_DIR`, `~/Workspace`)
 		expected := Cfg{
-			ScmPostCloneCmd: ScmPostCloneCmd{
-				Cmd:  "idea",
-				Args: []string{"/Users/pkorobeinikov/Workspace/github.com/user/repo"},
-			},
+			ScmPostCloneCmd: NewPostCloneCmd("idea", []string{"/Users/pkorobeinikov/Workspace/github.com/user/repo"}),
 		}
 
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `idea {{.ScmWorkingCopyPath}}`)
@@ -144,8 +141,8 @@ func TestReadCfg(t *testing.T) {
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, ``)
 		cfg, _ := Configure(`https://github.com/user/repo`, `-`)
 
-		if cfg.ScmPostCloneCmd.Cmd != "" {
-			t.Errorf(`want empty post clone cmd, got %s`, cfg.ScmPostCloneCmd.Cmd)
+		if !cfg.ScmPostCloneCmd.IsEmpty() {
+			t.Errorf(`want empty post clone cmd, got %s`, cfg.ScmPostCloneCmd.Command())
 		}
 
 		restoreEnvIfItWasFound(`SCM_POST_CLONE_CMD`, saveScmPostCloneCmdStr, foundScmPostCloneCmd)

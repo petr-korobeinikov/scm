@@ -5,12 +5,13 @@ import (
 	"os/exec"
 )
 
+// todo embrace LoD: cfg -> postCloneCmd
 func ExecutePostCmd(cfg Cfg) error {
-	if cfg.ScmPostCloneCmd.Cmd == "" {
+	if cfg.ScmPostCloneCmd.IsEmpty() {
 		return nil
 	}
 
-	postCloneCmd := exec.Command(cfg.ScmPostCloneCmd.Cmd, cfg.ScmPostCloneCmd.Args...)
+	postCloneCmd := exec.Command(cfg.ScmPostCloneCmd.Command(), cfg.ScmPostCloneCmd.Arguments()...)
 	postCloneCmd.Stdout = os.Stdout
 	postCloneCmd.Stderr = os.Stderr
 

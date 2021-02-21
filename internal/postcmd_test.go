@@ -9,10 +9,7 @@ import (
 func TestExecutePostCmd(t *testing.T) {
 	t.Run(`positive`, func(t *testing.T) {
 		err := ExecutePostCmd(Cfg{
-			ScmPostCloneCmd: ScmPostCloneCmd{
-				Cmd:  "echo",
-				Args: []string{"foo", "bar", "baz"},
-			},
+			ScmPostCloneCmd: NewPostCloneCmd("echo", []string{"foo", "bar", "baz"}),
 		})
 
 		if err != nil {
@@ -22,10 +19,7 @@ func TestExecutePostCmd(t *testing.T) {
 
 	t.Run(`negative`, func(t *testing.T) {
 		err := ExecutePostCmd(Cfg{
-			ScmPostCloneCmd: ScmPostCloneCmd{
-				Cmd:  "/bin/nonexistentcmd",
-				Args: nil,
-			},
+			ScmPostCloneCmd: NewPostCloneCmd("/bin/nonexistentcmd", nil),
 		})
 
 		if err == nil {
@@ -35,10 +29,7 @@ func TestExecutePostCmd(t *testing.T) {
 
 	t.Run(`empty cmd do not crashes`, func(t *testing.T) {
 		err := ExecutePostCmd(Cfg{
-			ScmPostCloneCmd: ScmPostCloneCmd{
-				Cmd:  "",
-				Args: nil,
-			},
+			ScmPostCloneCmd: EmptyPostCloneCmd,
 		})
 
 		if err != nil {
