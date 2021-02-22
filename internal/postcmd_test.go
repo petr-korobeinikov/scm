@@ -8,9 +8,7 @@ import (
 
 func TestExecutePostCmd(t *testing.T) {
 	t.Run(`positive`, func(t *testing.T) {
-		err := ExecutePostCmd(Cfg{
-			ScmPostCloneCmd: NewPostCloneCmd("echo", []string{"foo", "bar", "baz"}),
-		})
+		err := ExecutePostCmd(NewPostCloneCmd("echo", []string{"foo", "bar", "baz"}))
 
 		if err != nil {
 			t.Error(err)
@@ -18,9 +16,7 @@ func TestExecutePostCmd(t *testing.T) {
 	})
 
 	t.Run(`negative`, func(t *testing.T) {
-		err := ExecutePostCmd(Cfg{
-			ScmPostCloneCmd: NewPostCloneCmd("/bin/nonexistentcmd", nil),
-		})
+		err := ExecutePostCmd(NewPostCloneCmd("/bin/nonexistentcmd", nil))
 
 		if err == nil {
 			t.Error(`an error expected when calling not installed binary`)
@@ -28,9 +24,7 @@ func TestExecutePostCmd(t *testing.T) {
 	})
 
 	t.Run(`empty cmd do not crashes`, func(t *testing.T) {
-		err := ExecutePostCmd(Cfg{
-			ScmPostCloneCmd: EmptyPostCloneCmd,
-		})
+		err := ExecutePostCmd(EmptyPostCloneCmd)
 
 		if err != nil {
 			t.Error(`empty cmd must not crash`)

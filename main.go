@@ -36,7 +36,7 @@ func main() {
 		return
 	}
 
-	err = ExecutePostCmd(cfg)
+	err = ExecutePostCmd(cfg.ScmPostCloneCmd)
 	if err != nil {
 		return
 	}
