@@ -31,7 +31,7 @@ func TestParseArgs(t *testing.T) {
 				expected: expected{
 					scmBin: "",
 					scmUrl: "",
-					err:    NotEnoughArgumentsErr,
+					err:    ErrNotEnoughArguments,
 				},
 			},
 			{
@@ -40,7 +40,7 @@ func TestParseArgs(t *testing.T) {
 				expected: expected{
 					scmBin: "",
 					scmUrl: "",
-					err:    TooLongArgumentListErr,
+					err:    ErrTooLongArgumentList,
 				},
 			},
 			{

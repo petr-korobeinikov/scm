@@ -9,7 +9,7 @@ import (
 	"text/template"
 )
 
-func Configure(scmUrl, scmOverridePostCloneCmd string) (cfg Cfg, err error) {
+func Configure(scmURL, scmOverridePostCloneCmd string) (cfg Cfg, err error) {
 	scmExpandedWorkspaceDir, err := readScmWorkspaceDir()
 	if err != nil {
 		return
@@ -20,7 +20,7 @@ func Configure(scmUrl, scmOverridePostCloneCmd string) (cfg Cfg, err error) {
 		return
 	}
 
-	scmWorkingCopyPath, err := readScmWorkingCopyPath(scmExpandedWorkspaceDir, scmUrl)
+	scmWorkingCopyPath, err := readScmWorkingCopyPath(scmExpandedWorkspaceDir, scmURL)
 	if err != nil {
 		return
 	}
@@ -58,13 +58,13 @@ func readScmWorkspaceDirDefaultPermFileMode() (os.FileMode, error) {
 	return os.FileMode(scmWorkspaceDirDefaultPerm), nil
 }
 
-func readScmWorkingCopyPath(scmExpandedWorkspaceDir, scmUrl string) (string, error) {
-	scmPathFromUrl, err := ExtractLocalPathFromScmURL(scmUrl)
+func readScmWorkingCopyPath(scmExpandedWorkspaceDir, scmURL string) (string, error) {
+	scmPathFromURL, err := ExtractLocalPathFromScmURL(scmURL)
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(scmExpandedWorkspaceDir, scmPathFromUrl), nil
+	return filepath.Join(scmExpandedWorkspaceDir, scmPathFromURL), nil
 }
 
 func readPostCloneCmd(scmWorkingCopyPath string) (*scmPostCloneCmd, error) {

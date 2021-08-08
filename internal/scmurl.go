@@ -5,8 +5,8 @@ import (
 	"path"
 )
 
-func ExtractLocalPathFromScmURL(scmUrl string) (string, error) {
-	u, err := url.Parse(scmUrl)
+func ExtractLocalPathFromScmURL(scmURL string) (string, error) {
+	u, err := url.Parse(scmURL)
 	if err != nil {
 		return "", err
 	}

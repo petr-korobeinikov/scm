@@ -9,8 +9,8 @@ func PrepareLocalWorkingCopyPath(scmWorkingCopyPath string, scmWorkspaceDirDefau
 	return os.MkdirAll(scmWorkingCopyPath, scmWorkspaceDirDefaultPermFileMode)
 }
 
-func Clone(scmBin, scmUrl, scmWorkingCopyPath string) error {
-	scmCmd := exec.Command(scmBin, "clone", scmUrl, scmWorkingCopyPath)
+func Clone(scmBin, scmURL, scmWorkingCopyPath string) error {
+	scmCmd := exec.Command(scmBin, "clone", scmURL, scmWorkingCopyPath)
 	scmCmd.Stdout = os.Stdout
 	scmCmd.Stderr = os.Stderr
 
