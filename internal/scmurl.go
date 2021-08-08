@@ -5,6 +5,7 @@ import (
 	"path"
 )
 
+// ExtractLocalPathFromScmURL determines local working copy path.
 func ExtractLocalPathFromScmURL(scmURL string) (string, error) {
 	u, err := url.Parse(scmURL)
 	if err != nil {

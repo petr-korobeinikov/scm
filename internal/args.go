@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// ParseArgs parses command line arguments.
 func ParseArgs(args []string) (scmBin, scmURL, scmPostCmd string, err error) {
 	switch len(args) {
 	default:
@@ -40,7 +41,9 @@ func itLooksLikeURL(s string) bool {
 }
 
 var (
-	ErrNotEnoughArguments  = errors.New(`need at least one argument with repo url`)
+	// ErrNotEnoughArguments raises when arguments list is too small.
+	ErrNotEnoughArguments = errors.New(`need at least one argument with repo url`)
+	// ErrTooLongArgumentList raises when arguments list is too long.
 	ErrTooLongArgumentList = errors.New(`too long argument list`)
 )
 

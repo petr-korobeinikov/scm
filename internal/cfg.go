@@ -9,6 +9,7 @@ import (
 	"text/template"
 )
 
+// Configure configures scm itself.
 func Configure(scmURL, scmOverridePostCloneCmd string) (cfg Cfg, err error) {
 	scmExpandedWorkspaceDir, err := readScmWorkspaceDir()
 	if err != nil {
@@ -104,12 +105,14 @@ func prepareScmPostCloneCmd(unpreparedCmd string) (cmd string, args []string) {
 	return parts[0], parts[1:]
 }
 
+// Cfg handles configuration.
 type Cfg struct {
 	ScmWorkspaceDirDefaultPerm os.FileMode
 	ScmWorkingCopyPath         string
 	ScmPostCloneCmd            *scmPostCloneCmd
 }
 
+// ScmPostCloneCmdTmplData handles data for command templating.
 type ScmPostCloneCmdTmplData struct {
 	ScmWorkingCopyPath string
 }
@@ -126,6 +129,7 @@ func (c *scmPostCloneCmd) IsEmpty() bool {
 	return c.cmd == ""
 }
 
+// NewPostCloneCmd creates post clone command.
 func NewPostCloneCmd(cmd string, args []string) *scmPostCloneCmd {
 	return &scmPostCloneCmd{
 		cmd:  cmd,
@@ -133,6 +137,7 @@ func NewPostCloneCmd(cmd string, args []string) *scmPostCloneCmd {
 	}
 }
 
+// EmptyPostCloneCmd is an empty post clone command representation.
 var EmptyPostCloneCmd = NewPostCloneCmd("", []string{})
 
 type scmPostCloneCmd struct {

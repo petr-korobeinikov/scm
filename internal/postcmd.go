@@ -5,6 +5,7 @@ import (
 	"os/exec"
 )
 
+// ExecutePostCmd executes post clone command.
 func ExecutePostCmd(cmd *scmPostCloneCmd) error {
 	if cmd.IsEmpty() {
 		return nil
