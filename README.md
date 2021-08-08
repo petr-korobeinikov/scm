@@ -1,5 +1,7 @@
 # scm 💪
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/pkorobeinikov/scm)](https://goreportcard.com/report/github.com/pkorobeinikov/scm)
+
 ## It's time 🕒 to clone ⤵️ interesting 🧐 repo faster ⏩ and clearer 🧹
 
 `scm` is a tool that aims to keep your workspace to be strongly organized.
