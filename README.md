@@ -6,6 +6,15 @@
 
 `scm` is a tool that aims to keep your workspace to be strongly organized.
 
+<!-- toc -->
+
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Building from source](#building-from-source)
+- [Running tests](#running-tests)
+
+<!-- tocstop -->
+
 [![Usage example](demo.svg)](https://asciinema.org/a/387451)
 
 Hi, folks!
@@ -58,6 +67,24 @@ Trailing `-` allows omitting execution of post clone command.
 
 ```shell
 scm https://github.com/github/gitignore -
+```
+
+## Usage
+
+```shell
+# Clone repo and execute post command, see `SCM_POST_CLONE_CMD`
+scm https://github.com/github/gitignore
+
+# Show last cloned repo
+scm last
+
+# Omit post command execution, open project in Idea
+scm https://github.com/github/gitignore -
+idea $(scm last)
+
+# Open in Goland
+scm https://github.com/pkorobeinikov/scm
+goland $(scm last)
 ```
 
 ## Configuration
