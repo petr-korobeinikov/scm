@@ -64,6 +64,8 @@ func LastRead() error {
 		return err
 	}
 
+	// todo remote or local?
+	// todo return instead of print
 	fmt.Println(histEntry.Local)
 
 	return nil
