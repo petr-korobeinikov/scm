@@ -5,6 +5,7 @@ import (
 	"os"
 
 	scm "scm/internal"
+	"scm/internal/history"
 )
 
 func main() {
@@ -15,6 +16,12 @@ func main() {
 			log.Fatalln(err)
 		}
 	}()
+
+	if len(os.Args) == 2 && os.Args[1] == "last" {
+		err = history.LastRead()
+
+		return
+	}
 
 	scmBin, scmURL, scmOverridePostCloneCmd, err := scm.ParseArgs(os.Args)
 	if err != nil {
@@ -32,6 +39,14 @@ func main() {
 	}
 
 	err = scm.Clone(scmBin, scmURL, cfg.ScmWorkingCopyPath)
+	if err != nil {
+		return
+	}
+
+	err = history.LastWrite(history.HistEntry{
+		Remote: scmURL,
+		Local:  cfg.ScmWorkingCopyPath,
+	})
 	if err != nil {
 		return
 	}
