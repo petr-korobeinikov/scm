@@ -7,7 +7,7 @@
 `scm` is a tool that aims to keep your workspace to be strongly organized.
 
 <!-- toc -->
-
+- [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Building from source](#building-from-source)
@@ -67,6 +67,12 @@ Trailing `-` allows omitting execution of post clone command.
 
 ```shell
 scm https://github.com/github/gitignore -
+```
+
+## installation
+
+```shell
+go get -u github.com/pkorobeinikov/scm@latest
 ```
 
 ## Usage

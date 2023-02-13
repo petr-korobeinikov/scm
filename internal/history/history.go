@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"scm/internal"
+	"github.com/pkorobeinikov/scm/internal"
 )
 
 func LastWrite(histEntry HistEntry) error {

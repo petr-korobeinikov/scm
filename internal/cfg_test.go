@@ -2,10 +2,11 @@ package internal_test
 
 import (
 	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
-	. "scm/internal"
+	. "github.com/pkorobeinikov/scm/internal"
 )
 
 func TestReadCfg(t *testing.T) {
@@ -69,7 +70,7 @@ func TestReadCfg(t *testing.T) {
 
 		_ = os.Setenv(`SCM_WORKSPACE_DIR`, `~/Workspace`)
 		expected := Cfg{
-			ScmPostCloneCmd: NewPostCloneCmd("idea", []string{"/Users/pkorobeinikov/Workspace/github.com/user/repo"}),
+			ScmPostCloneCmd: NewPostCloneCmd("idea", []string{filepath.Join(os.Getenv("HOME"), "Workspace", "github.com", "user", "repo")}),
 		}
 
 		_ = os.Setenv(`SCM_POST_CLONE_CMD`, `idea {{.ScmWorkingCopyPath}}`)
