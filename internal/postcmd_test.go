@@ -3,7 +3,7 @@ package internal_test
 import (
 	"testing"
 
-	. "scm/internal"
+	. "github.com/pkorobeinikov/scm/internal"
 )
 
 func TestExecutePostCmd(t *testing.T) {

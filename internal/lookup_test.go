@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	. "scm/internal"
+	. "github.com/pkorobeinikov/scm/internal"
 )
 
 func TestLookupEnvOrDefault(t *testing.T) {

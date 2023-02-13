@@ -2,15 +2,15 @@ package internal_test
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 
-	. "scm/internal"
+	. "github.com/pkorobeinikov/scm/internal"
 )
 
 func TestExpandHomeDir(t *testing.T) {
 	t.Run(`positive`, func(t *testing.T) {
-		// fixme hardcoded value
-		expected := `/Users/pkorobeinikov/Workspace`
+		expected := filepath.Join(os.Getenv("HOME"), "Workspace")
 
 		actual, _ := ExpandHomeDir(`~/Workspace`)
 		if expected != actual {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	. "scm/internal"
+	. "github.com/pkorobeinikov/scm/internal"
 )
 
 func TestParseArgs(t *testing.T) {
