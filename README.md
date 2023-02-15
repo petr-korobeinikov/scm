@@ -72,7 +72,7 @@ scm https://github.com/github/gitignore -
 ## installation
 
 ```shell
-go get -u github.com/pkorobeinikov/scm@latest
+go install github.com/pkorobeinikov/scm@latest
 ```
 
 ## Usage
