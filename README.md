@@ -6,15 +6,6 @@
 
 `scm` is a tool that aims to keep your workspace to be strongly organized.
 
-<!-- toc -->
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Building from source](#building-from-source)
-- [Running tests](#running-tests)
-
-<!-- tocstop -->
-
 [![Usage example](demo.svg)](https://asciinema.org/a/387451)
 
 Hi, folks!
