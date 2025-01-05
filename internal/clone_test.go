@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	. "github.com/pkorobeinikov/scm/internal"
+	. "github.com/petr-korobeinikov/scm/internal"
 )
 
 func TestPrepareLocalWorkingCopyPath(t *testing.T) {

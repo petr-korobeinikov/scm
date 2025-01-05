@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/pkorobeinikov/scm/internal/history"
+	"github.com/petr-korobeinikov/scm/internal/history"
 
-	scm "github.com/pkorobeinikov/scm/internal"
+	scm "github.com/petr-korobeinikov/scm/internal"
 )
 
 func main() {

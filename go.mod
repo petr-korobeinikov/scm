@@ -1,3 +1,3 @@
-module github.com/pkorobeinikov/scm
+module github.com/petr-korobeinikov/scm
 
-go 1.15
+go 1.23.4

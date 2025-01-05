@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	. "github.com/pkorobeinikov/scm/internal"
+	. "github.com/petr-korobeinikov/scm/internal"
 )
 
 func TestReadCfg(t *testing.T) {

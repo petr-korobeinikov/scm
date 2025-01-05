@@ -1,6 +1,6 @@
 # scm 💪
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/pkorobeinikov/scm)](https://goreportcard.com/report/github.com/pkorobeinikov/scm)
+[![Go Report Card](https://goreportcard.com/badge/github.com/petr-korobeinikov/scm)](https://goreportcard.com/report/github.com/petr-korobeinikov/scm)
 
 ## It's time 🕒 to clone ⤵️ interesting 🧐 repo faster ⏩ and clearer 🧹
 
@@ -50,10 +50,10 @@ But I prefer a much more strong outline, like this:
 Copy interesting repo URL and paste it into your terminal:
 
 ```shell
-scm https://github.com/pkorobeinikov/scm
+scm https://github.com/petr-korobeinikov/scm
 ```
 
-It will clone `https://github.com/pkorobeinikov/scm` into `~/Workspace/github.com/pkorobeinikov/scm`.
+It will clone `https://github.com/petr-korobeinikov/scm` into `~/Workspace/github.com/petr-korobeinikov/scm`.
 
 It's also possible to clone `hg`-repo. So command:
 
@@ -72,7 +72,7 @@ scm https://github.com/github/gitignore -
 ## installation
 
 ```shell
-go install github.com/pkorobeinikov/scm@latest
+go install github.com/petr-korobeinikov/scm@latest
 ```
 
 ## Usage
@@ -89,7 +89,7 @@ scm https://github.com/github/gitignore -
 idea $(scm last)
 
 # Open in Goland
-scm https://github.com/pkorobeinikov/scm
+scm https://github.com/petr-korobeinikov/scm
 goland $(scm last)
 ```
 
@@ -107,7 +107,7 @@ export SCM_POST_CLONE_CMD="idea {{.ScmWorkingCopyPath}}"  # defaults to ""
 ## Building from source
 
 ```shell
-go build -o ~/Bin/scm main.go
+go build -o ~/Bin/scm .
 ```
 
 ## Running tests
